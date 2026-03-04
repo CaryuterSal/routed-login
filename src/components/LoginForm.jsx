@@ -1,67 +1,125 @@
-import {matches} from './utils/password-manager.js';
-import {useContext, useRef, useState} from 'react';
-import {SessionContext} from '../hooks/context/SessionContext.js';
-import {UserDataContext} from '../hooks/context/UserDataContext.js';
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {USERS} from "../assets/user-data.js";
+import {useSession} from "../hooks/context/SessionContext.jsx";
 
-function LoginForm(){
-  const usernameInputRef = useRef()
-  const passwordInputRef = useRef()
+function LoginForm() {
+  const usernameRef = useRef();
+  const passwordRef = useRef();
 
-  const {userData, setUserData} = useContext(UserDataContext)
-  const {sessionContext, setSessionContext} = useContext(SessionContext)
+  const { login } = useSession();
+  const navigate = useNavigate();
 
-  const {error, setError} = useState(null)
-  const {isPasswordEmpty, setIsPasswordEmpty} = useState(false)
-  const {isUsernameEmpty, setIsUsernameEmpty} = useState(false)
+  const [error, setError] = useState(null);
 
-  function handleLoginForm(){
-    const username = usernameInputRef.current.value
-    if(!username) setIsUsernameEmpty(true)
-    const password = passwordInputRef.current.value
-    if(!password) setIsPasswordEmpty(true)
+  function handleLogin(e) {
+    e.preventDefault();
 
-    const userFound = userData.find(user => user.username === username)
-    if(!userFound) return handleOnFailure();
+    const username = usernameRef.current.value;
+    const password = passwordRef.current.value;
+    console.log(username, password);
 
-    const isMatch = matches(password, userFound.password)
-    isMatch ? handleOnSuccess() : handleOnFailure()
+    const userFound = USERS.find(
+        (u) => u.username === username && u.password === password
+    );
 
-    function handleOnFailure(){
-      setError('Invalid username or password')
+    if (!userFound) {
+      setError("Credenciales incorrectas");
+      return;
     }
 
-    function handleOnSuccess(){
-      const {password, ...secureUser} = userFound
-      setSessionContext(secureUser)
+    login(userFound);
+
+    if (userFound.role === "ADMIN") {
+      navigate("/admin");
+    } else {
+      navigate("/profile");
     }
   }
+  return (
+      <div
+          style={{
+            flexGrow: 1,
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#f4f6f8",
+          }}
+      >
+        <form
+            onSubmit={handleLogin}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "15px",
+              padding: "40px",
+              width: "320px",
+              backgroundColor: "#ffffff",
+              borderRadius: "12px",
+              boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+            }}
+        >
+          <h1 style={{ textAlign: "center", marginBottom: "10px" , color: "black" }}>
+            Login
+          </h1>
 
-  const clearErrors = () => {
-    setIsUsernameEmpty(false)
-    setIsPasswordEmpty(false)
-  }
+          {error && (
+              <p
+                  style={{
+                    color: "#e63946",
+                    backgroundColor: "#ffe5e5",
+                    padding: "8px",
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                    textAlign: "center",
+                  }}
+              >
+                {error}
+              </p>
+          )}
 
-  const clearInputs = () => {
-    usernameInputRef.current.value = ''
-    passwordInputRef.current.value = ''
-  }
+          <input
+              ref={usernameRef}
+              type="text"
+              placeholder="Correo"
+              style={{
+                padding: "10px",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+                fontSize: "14px",
+              }}
+          />
 
-  return <>
-    <h1>Login</h1>
-    <p>{error}</p>
-    <form>
-      <input ref={usernameInputRef} type='email' placeholder='20243ds001@utez.edu.mx' onChange={clearErrors}/>
-      <p>{isUsernameEmpty && 'El campo es obligatorio'}</p>
-      <input ref={passwordInputRef} type='password' placeholder='Inserta tu contraseña' onChange={clearErrors}/>
-      <p>{isPasswordEmpty && 'El campo es obligatorio'}</p>
-      <button onClick={ e => {
-        e.preventDefault()
-        handleLoginForm()
-        clearInputs()
-      }}>Login</button>
-      <p>{sessionContext && 'Logged in'}</p>
-    </form>
-  </>
+          <input
+              ref={passwordRef}
+              type="password"
+              placeholder="Contraseña"
+              style={{
+                padding: "10px",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+                fontSize: "14px",
+              }}
+          />
+
+          <button
+              type="submit"
+              style={{
+                padding: "10px",
+                borderRadius: "8px",
+                border: "none",
+                backgroundColor: "#3a86ff",
+                color: "white",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+          >
+            Login
+          </button>
+        </form>
+      </div>
+  );
 }
 
-export default LoginForm
+export default LoginForm;

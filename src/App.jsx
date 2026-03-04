@@ -1,26 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import LoginForm from './components/LoginForm.jsx';
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LoginForm from "./components/LoginForm";
+import Profile from "./pages/Profile";
+import Admin from "./pages/Admin";
+import ProtectedRoute from "./components/ProtectedRoute";
+import {SessionProvider} from "./hooks/context/SessionContext.jsx";
 
 function App() {
-  const [count, setCount] = useState(0)
+    return (
+        <SessionProvider>
+                <Routes>
+                    <Route path="/login" element={<LoginForm />} />
+                    <Route path="/" element={<LoginForm />} />
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <LoginForm/>
-    </>
-  )
+                    <Route
+                        path="/profile"
+                        element={
+                            <ProtectedRoute>
+                                <Profile />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/admin"
+                        element={
+                            <ProtectedRoute>
+                                <Admin />
+                            </ProtectedRoute>
+                        }
+                    />
+                </Routes>
+        </SessionProvider>
+    );
 }
 
-export default App
+export default App;
