@@ -2,7 +2,7 @@ import {useSession} from "../hooks/context/SessionContext.jsx";
 import {USERS} from "../assets/user-data.js";
 
 function Admin() {
-    const { user } = useSession();
+    const { user , logout} = useSession();
 
     return (
         <div style={{
@@ -48,6 +48,7 @@ function Admin() {
                 ))}
                 </tbody>
             </table>
+            <button onClick={logout} >CERRAR SESION</button>
         </div>
     );
 }

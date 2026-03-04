@@ -1,36 +1,55 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import ProtectedRoute from "./components/ProtectedRoute";
-import {SessionProvider} from "./hooks/context/SessionContext.jsx";
+import { useSession } from "./hooks/context/SessionContext";
 
 function App() {
+    const { user } = useSession();
+
     return (
-        <SessionProvider>
-                <Routes>
-                    <Route path="/login" element={<LoginForm />} />
-                    <Route path="/" element={<LoginForm />} />
+        <Routes>
+            <Route
+                path="/login"
+                element={
+                    !user
+                        ? <LoginForm />
+                        : user.role === "ADMIN"
+                            ? <Navigate to="/admin" />
+                            : <Navigate to="/profile" />
+                }
+            />
 
-                    <Route
-                        path="/profile"
-                        element={
-                            <ProtectedRoute>
-                                <Profile />
-                            </ProtectedRoute>
-                        }
-                    />
+            <Route
+                path="/"
+                element={
+                    !user
+                        ? <Navigate to="/login" />
+                        : user.role === "ADMIN"
+                            ? <Navigate to="/admin" />
+                            : <Navigate to="/profile" />
+                }
+            />
 
-                    <Route
-                        path="/admin"
-                        element={
-                            <ProtectedRoute>
-                                <Admin />
-                            </ProtectedRoute>
-                        }
-                    />
-                </Routes>
-        </SessionProvider>
+            <Route
+                path="/profile"
+                element={
+                    <ProtectedRoute allowedRole={"USER"} >
+                        <Profile />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/admin"
+                element={
+                    <ProtectedRoute allowedRole={"ADMIN"} >
+                        <Admin />
+                    </ProtectedRoute>
+                }
+            />
+        </Routes>
     );
 }
 
