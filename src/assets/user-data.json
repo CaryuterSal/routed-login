@@ -1,0 +1,32 @@
+[
+  {
+    "username": "20243ds158",
+    "fullName": "Carlos Emanuel Salgado Trujillo",
+    "role": "USER",
+    "password": ""
+  },
+  {
+    "username": "20243ds002",
+    "fullName": "Yahir Fuentes Martínez",
+    "role": "ADMIN",
+    "password": ""
+  },
+  {
+    "username": "20243ds154",
+    "fullName": "Kevin Porcayo",
+    "role": "ADMIN",
+    "password": ""
+  },
+  {
+    "username": "20243ds173",
+    "fullName": "Daniel Duran Torres",
+    "role": "USER",
+    "password": ""
+  },
+  {
+    "username": "20243ds173",
+    "fullName": "José María Domínguez Bringas",
+    "role": "USER",
+    "password": ""
+  }
+]
