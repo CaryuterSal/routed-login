@@ -1,4 +1,5 @@
 import { useSession } from "../hooks/context/SessionContext.jsx";
+import CustomButton from "../components/CustomButton.jsx";
 
 function Profile() {
     const { user, logout } = useSession();
@@ -26,11 +27,7 @@ function Profile() {
                     Bienvenido {user.fullName}
                 </h2>
 
-                <button
-                    onClick={logout}
-                >
-                    Cerrar sesión
-                </button>
+                <CustomButton fun={logout} type={'negative'} />
             </div>
         </div>
     );

@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {USERS} from "../assets/user-data.js";
 import {useSession} from "../hooks/context/SessionContext.jsx";
+import CustomButton from "./CustomButton.jsx";
 
 function LoginForm() {
   const usernameRef = useRef();
@@ -103,20 +104,7 @@ function LoginForm() {
               }}
           />
 
-          <button
-              type="submit"
-              style={{
-                padding: "10px",
-                borderRadius: "8px",
-                border: "none",
-                backgroundColor: "#3a86ff",
-                color: "white",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-          >
-            Login
-          </button>
+            <CustomButton type={'positive'} fun={login} />
         </form>
       </div>
   );
